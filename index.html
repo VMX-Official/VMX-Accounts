@@ -3,161 +3,177 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Roblox Account Vault</title>
+  <title>Roblox Accounts Showcase</title>
   <style>
     body {
-      margin: 0;
+      background-color: #0d0d0d;
       font-family: Arial, sans-serif;
-      background: #0d0d0d;
       color: white;
-    }
-
-    header {
-      background: #1a1a1a;
-      padding: 20px 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header nav a {
-      color: white;
-      margin: 0 15px;
-      text-decoration: none;
-      font-weight: bold;
-    }
-
-    h1 {
-      text-align: center;
-      margin-top: 30px;
-      font-size: 28px;
-      color: #ff1a1a;
+      padding: 40px;
     }
 
     .cards-container {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 20px;
-      padding: 30px;
+      justify-items: center;
     }
 
-    .card {
-      background: #1a1a1a;
-      border: 1px solid #ff1a1a;
+    .account-card {
+      width: 280px;
+      background-color: #1a1a1a;
+      border: 2px solid #ff1a1a;
       border-radius: 10px;
-      padding: 20px;
-      text-align: center;
+      overflow: hidden;
+      font-size: 14px;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.2);
     }
 
-    .card h3 {
+    .account-card img {
+      width: 100%;
+      display: block;
+    }
+
+    .account-card .info {
+      padding: 15px;
+      border-top: 1px solid #333;
+    }
+
+    .account-card .tagline {
       color: #ff1a1a;
+      font-weight: bold;
+      font-size: 12px;
+      margin-bottom: 5px;
+    }
+
+    .account-card .title {
+      font-weight: bold;
+      font-size: 16px;
+      color: white;
+    }
+
+    .account-card .source {
+      color: #888;
+      font-size: 12px;
       margin-bottom: 10px;
     }
 
-    .card p {
+    .account-card .price {
+      margin-top: 10px;
       font-size: 14px;
-      color: #ccc;
     }
 
-    .benefits {
-      display: flex;
-      justify-content: space-around;
-      flex-wrap: wrap;
-      padding: 40px 20px;
+    .price .current {
+      color: #fff;
+      font-weight: bold;
     }
 
-    .benefit {
-      border: 1px solid #ff1a1a;
-      border-radius: 10px;
-      padding: 20px;
-      margin: 10px;
-      width: 220px;
-      text-align: center;
-    }
-
-    .benefit h4 {
+    .price .currency {
       color: #ff1a1a;
-      margin-bottom: 10px;
-    }
-
-    .benefit p {
-      font-size: 14px;
-      color: #ccc;
+      font-weight: bold;
+      margin-right: 4px;
     }
   </style>
 </head>
 <body>
-  <header>
-    <div><strong style="color:#ff1a1a;">R</strong>oblox Vault</div>
-    <nav>
-      <a href="#">Home</a>
-      <a href="#">Accounts</a>
-      <a href="#">Status</a>
-      <a href="#">Contact</a>
-    </nav>
-  </header>
 
-  <h1>Available Roblox Accounts (2017 - 2025)</h1>
-
-  <div class="benefits">
-    <div class="benefit">
-      <h4>USER-FRIENDLY</h4>
-      <p>Simple layout, quick access to account info.</p>
-    </div>
-    <div class="benefit">
-      <h4>SAFE DISPLAY</h4>
-      <p>View-only, no transactions or risks involved.</p>
-    </div>
-    <div class="benefit">
-      <h4>YEARLY CATEGORIES</h4>
-      <p>Accounts neatly grouped by year of creation.</p>
-    </div>
-    <div class="benefit">
-      <h4>SUPPORT COMING SOON</h4>
-      <p>Help & FAQs for account display will be added.</p>
-    </div>
-  </div>
+  <h1 style="text-align: center; color: #ff1a1a;">Roblox Accounts (2017 - 2025)</h1>
 
   <div class="cards-container">
-    <!-- Example card per year -->
-    <!-- 2025 to 2017 -->
-    <!-- You can duplicate this and modify the content -->
-    <div class="card">
-      <h3>2025 Account</h3>
-      <p>Fresh new account. Clean, no bans. Created in 2025.</p>
+
+    <!-- Template for each year -->
+    <!-- Replace title and price per year -->
+
+    <div class="account-card">
+      <img src="https://cdn.discordapp.com/attachments/1390620630575091792/1397871361401028618/roblox.png" alt="Roblox Account">
+      <div class="info">
+        <div class="tagline">FRESH ACCOUNT</div>
+        <div class="title">Roblox 2025</div>
+        <div class="source">discord.gg/robloxvault</div>
+        <div class="price"><span class="currency">£</span><span class="current">0.30</span></div>
+      </div>
     </div>
-    <div class="card">
-      <h3>2024 Account</h3>
-      <p>Active for 1 year. Safe and verified. Created in 2024.</p>
+
+    <div class="account-card">
+      <img src="https://cdn.discordapp.com/attachments/1390620630575091792/1397871361401028618/roblox.png" alt="Roblox Account">
+      <div class="info">
+        <div class="tagline">1 YEAR OLD</div>
+        <div class="title">Roblox 2024</div>
+        <div class="source">discord.gg/robloxvault</div>
+        <div class="price"><span class="currency">£</span><span class="current">1.00</span></div>
+      </div>
     </div>
-    <div class="card">
-      <h3>2023 Account</h3>
-      <p>Trusted, well-aged account. Created in 2023.</p>
+
+    <div class="account-card">
+      <img src="https://cdn.discordapp.com/attachments/1390620630575091792/1397871361401028618/roblox.png" alt="Roblox Account">
+      <div class="info">
+        <div class="tagline">2 YEARS OLD</div>
+        <div class="title">Roblox 2023</div>
+        <div class="source">discord.gg/robloxvault</div>
+        <div class="price"><span class="currency">£</span><span class="current">1.20</span></div>
+      </div>
     </div>
-    <div class="card">
-      <h3>2022 Account</h3>
-      <p>Two years old. Includes basic games and history.</p>
+
+    <div class="account-card">
+      <img src="https://cdn.discordapp.com/attachments/1390620630575091792/1397871361401028618/roblox.png" alt="Roblox Account">
+      <div class="info">
+        <div class="tagline">3 YEARS OLD</div>
+        <div class="title">Roblox 2022</div>
+        <div class="source">discord.gg/robloxvault</div>
+        <div class="price"><span class="currency">£</span><span class="current">1.99</span></div>
+      </div>
     </div>
-    <div class="card">
-      <h3>2021 Account</h3>
-      <p>Solid reputation. Created in 2021.</p>
+
+    <div class="account-card">
+      <img src="https://cdn.discordapp.com/attachments/1390620630575091792/1397871361401028618/roblox.png" alt="Roblox Account">
+      <div class="info">
+        <div class="tagline">4 YEARS OLD</div>
+        <div class="title">Roblox 2021</div>
+        <div class="source">discord.gg/robloxvault</div>
+        <div class="price"><span class="currency">£</span><span class="current">2.50</span></div>
+      </div>
     </div>
-    <div class="card">
-      <h3>2020 Account</h3>
-      <p>Five years old. Strong history. Created in 2020.</p>
+
+    <div class="account-card">
+      <img src="https://cdn.discordapp.com/attachments/1390620630575091792/1397871361401028618/roblox.png" alt="Roblox Account">
+      <div class="info">
+        <div class="tagline">5 YEARS OLD</div>
+        <div class="title">Roblox 2020</div>
+        <div class="source">discord.gg/robloxvault</div>
+        <div class="price"><span class="currency">£</span><span class="current">2.70</span></div>
+      </div>
     </div>
-    <div class="card">
-      <h3>2019 Account</h3>
-      <p>Legacy user. Clean, seasoned. Created in 2019.</p>
+
+    <div class="account-card">
+      <img src="https://cdn.discordapp.com/attachments/1390620630575091792/1397871361401028618/roblox.png" alt="Roblox Account">
+      <div class="info">
+        <div class="tagline">6 YEARS OLD</div>
+        <div class="title">Roblox 2019</div>
+        <div class="source">discord.gg/robloxvault</div>
+        <div class="price"><span class="currency">£</span><span class="current">3.00</span></div>
+      </div>
     </div>
-    <div class="card">
-      <h3>2018 Account</h3>
-      <p>Veteran account. 7 years of Roblox history.</p>
+
+    <div class="account-card">
+      <img src="https://cdn.discordapp.com/attachments/1390620630575091792/1397871361401028618/roblox.png" alt="Roblox Account">
+      <div class="info">
+        <div class="tagline">7 YEARS OLD</div>
+        <div class="title">Roblox 2018</div>
+        <div class="source">discord.gg/robloxvault</div>
+        <div class="price"><span class="currency">£</span><span class="current">3.20</span></div>
+      </div>
     </div>
-    <div class="card">
-      <h3>2017 Account</h3>
-      <p>Classic era account. Long-standing user since 2017.</p>
+
+    <div class="account-card">
+      <img src="https://cdn.discordapp.com/attachments/1390620630575091792/1397871361401028618/roblox.png" alt="Roblox Account">
+      <div class="info">
+        <div class="tagline">8 YEARS OLD</div>
+        <div class="title">Roblox 2017</div>
+        <div class="source">discord.gg/robloxvault</div>
+        <div class="price"><span class="currency">£</span><span class="current">4.00</span></div>
+      </div>
     </div>
+
   </div>
 </body>
 </html>
