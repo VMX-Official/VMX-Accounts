@@ -1,132 +1,217 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
 <title></title>
 <style>
-  html, body {
-    margin: 0;
-    padding: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: black;
-    font-family: Arial, sans-serif;
+  html,body{
+    height:100%;
+    width:100%;
+    margin:0;
+    background:#000;
+    overflow:hidden;
+    font-family: Arial, Helvetica, sans-serif;
   }
 
-  /* Background wrapper */
-  #bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    z-index: -1;
-    pointer-events: none;
+  /* background holder (must be above page background) */
+  #bg{
+    position:fixed;
+    inset:0;
+    z-index:0;            /* keep >= 0 so it sits above page background */
+    overflow:hidden;
+    pointer-events:none;  /* block mouse interaction */
   }
 
-  #bg iframe {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 177.78vh; /* Maintain 16:9 aspect ratio */
-    height: 100vh;
-    transform: translate(-50%, -50%);
-    border: none;
-    filter: blur(10px) brightness(0.6);
-    pointer-events: none;
-    opacity: 0;
-    transition: opacity 3s ease;
+  /* player iframe: cover the screen */
+  #bg iframe{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%,-50%);
+    min-width:100%;
+    min-height:100%;
+    width:auto;
+    height:auto;
+    border:0;
+    filter: blur(12px) brightness(0.6);
+    opacity:0;
+    transition: opacity 1.6s ease;
+    pointer-events:none;
   }
 
-  #bg.show iframe {
-    opacity: 1;
+  /* when showing, fade in */
+  #bg.show iframe { opacity: 1; }
+
+  /* overlay that will fade out */
+  #overlay{
+    position:fixed;
+    inset:0;
+    z-index:2;
+    background: rgba(0,0,0,1); /* start solid black */
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: opacity 1.2s ease;
+  }
+  #overlay.hidden{
+    opacity:0;
+    pointer-events:none;
   }
 
-  /* Overlay that fades out */
-  #overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 1); /* solid black at start */
-    z-index: 2;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: opacity 2.5s ease;
-  }
-
-  #overlay.hidden {
-    opacity: 0;
-    pointer-events: none;
-  }
-
-  /* Enter text styling */
+  /* enter text - smaller, glowing, no outline */
   #enter {
-    color: #00ffff;
-    font-size: 1.1rem; /* slightly smaller */
-    text-transform: uppercase;
-    letter-spacing: 3px;
+    color:#00ffff;
+    font-size:1.05rem; /* slightly smaller */
+    text-transform:uppercase;
+    letter-spacing:3px;
     text-shadow:
-      0 0 10px #00ffff,
-      0 0 20px #00ffff,
-      0 0 40px #00ffff;
-    cursor: pointer;
-    animation: glow 2s infinite alternate;
-    user-select: none;
-    transition: opacity 1.5s ease;
+      0 0 8px #00ffff,
+      0 0 18px #00ffff,
+      0 0 36px #00ffff;
+    cursor:pointer;
+    user-select:none;
+    transition:opacity .9s ease;
+    animation: glow 1.8s infinite alternate;
   }
-
-  #enter.fade {
-    opacity: 0;
-  }
+  #enter.fade { opacity: 0; }
 
   @keyframes glow {
-    from { text-shadow: 0 0 5px #00ffff, 0 0 10px #00ffff, 0 0 20px #00ffff; }
-    to   { text-shadow: 0 0 20px #00ffff, 0 0 40px #00ffff, 0 0 80px #00ffff; }
+    from { text-shadow: 0 0 6px #00ffff, 0 0 12px #00ffff; }
+    to   { text-shadow: 0 0 14px #00ffff, 0 0 30px #00ffff, 0 0 60px #00ffff; }
   }
 </style>
 </head>
 <body>
 
+<!-- Background container (player will insert here) -->
 <div id="bg">
-  <iframe
-    id="yt"
-    src="https://www.youtube.com/embed/hO_iQqWhOUA?autoplay=0&mute=1&loop=1&playlist=hO_iQqWhOUA&controls=0&modestbranding=1&showinfo=0&rel=0"
-    allow="autoplay; fullscreen">
-  </iframe>
+  <!-- We'll create the player iframe with JS API inside this div -->
+  <div id="player-placeholder"></div>
 </div>
 
+<!-- Fullscreen dark overlay with Enter text -->
 <div id="overlay">
   <div id="enter">Enter</div>
 </div>
 
 <script>
+  // Prevent right-click and space toggling (to avoid interacting with video)
+  document.addEventListener('contextmenu', e => { e.preventDefault(); });
+  document.addEventListener('keydown', e => {
+    if (e.code === 'Space') e.preventDefault();
+  });
+
+  // Load YouTube IFrame API
+  const tag = document.createElement('script');
+  tag.src = "https://www.youtube.com/iframe_api";
+  document.head.appendChild(tag);
+
+  let player;
+  function onYouTubeIframeAPIReady() {
+    // Create player but DON'T autoplay (we want nothing playing until Enter)
+    player = new YT.Player('player-placeholder', {
+      videoId: 'hO_iQqWhOUA',
+      playerVars: {
+        autoplay: 0,
+        controls: 0,
+        showinfo: 0,
+        modestbranding: 1,
+        rel: 0,
+        loop: 1,
+        playlist: 'hO_iQqWhOUA',
+        disablekb: 1,
+        playsinline: 1
+      },
+      events: {
+        onReady: ev => {
+          // keep muted initially (safe), set a low volume so when unmuted we can set level
+          try { ev.target.setVolume(20); } catch(e){}
+        },
+        onStateChange: ev => {
+          // no-op, but available for debugging if needed
+        }
+      }
+    });
+  }
+
   const enter = document.getElementById('enter');
   const overlay = document.getElementById('overlay');
   const bg = document.getElementById('bg');
-  const yt = document.getElementById('yt');
 
-  enter.addEventListener('click', () => {
-    // Fade out text first
+  enter.addEventListener('click', async () => {
+    // visual: fade the text quickly
     enter.classList.add('fade');
 
-    // Then fade out the overlay and show video
+    // small delay to let text fade a bit before fading overlay
     setTimeout(() => {
-      overlay.classList.add('hidden');
+      // reveal the blurred background area
       bg.classList.add('show');
 
-      // Start video and unmute
-      const newSrc = yt.src
-        .replace('autoplay=0', 'autoplay=1')
-        .replace('mute=1', 'mute=0');
-      yt.src = newSrc;
-    }, 800);
+      // fade out the black overlay so the page background and bg appear
+      overlay.classList.add('hidden');
+    }, 200); // short
+
+    // Play & unmute using the API — this call is a direct result of user click (gesture)
+    // so browsers will allow audio to start.
+    setTimeout(() => {
+      try {
+        if (player && typeof player.playVideo === 'function') {
+          // start playing
+          player.playVideo();
+
+          // unmute and set low volume (safe)
+          try { player.unMute(); } catch(e){}
+          try { player.setVolume(22); } catch(e){}
+        } else {
+          // Fallback: if player not ready, create a plain iframe and start it
+          const iframe = document.createElement('iframe');
+          iframe.allow = "autoplay; fullscreen";
+          iframe.src = "https://www.youtube.com/embed/hO_iQqWhOUA?autoplay=1&mute=0&loop=1&playlist=hO_iQqWhOUA&controls=0&modestbranding=1&rel=0&playsinline=1";
+          iframe.style.position = 'absolute';
+          iframe.style.top = '50%';
+          iframe.style.left = '50%';
+          iframe.style.transform = 'translate(-50%,-50%)';
+          iframe.style.minWidth = '100%';
+          iframe.style.minHeight = '100%';
+          iframe.style.width = 'auto';
+          iframe.style.height = 'auto';
+          iframe.style.border = '0';
+          iframe.style.filter = 'blur(12px) brightness(0.6)';
+          iframe.style.opacity = '1';
+          iframe.style.pointerEvents = 'none';
+          const placeholder = document.getElementById('player-placeholder');
+          placeholder.appendChild(iframe);
+        }
+      } catch (err) {
+        console.warn('YT player control failed:', err);
+      }
+    }, 320); // allow UI fade to start first
   });
+
+  // Safety: If the API hasn't loaded within a few seconds (rare), ensure background is still usable:
+  setTimeout(() => {
+    // if player-placeholder is empty after 4s, inject a muted iframe so the visual exists (it will be unmuted on click)
+    if (!document.querySelector('#player-placeholder iframe') && typeof YT === 'undefined') {
+      const iframe = document.createElement('iframe');
+      iframe.allow = "autoplay; fullscreen";
+      iframe.src = "https://www.youtube.com/embed/hO_iQqWhOUA?autoplay=0&mute=1&loop=1&playlist=hO_iQqWhOUA&controls=0&modestbranding=1&rel=0&playsinline=1";
+      iframe.style.position = 'absolute';
+      iframe.style.top = '50%';
+      iframe.style.left = '50%';
+      iframe.style.transform = 'translate(-50%,-50%)';
+      iframe.style.minWidth = '100%';
+      iframe.style.minHeight = '100%';
+      iframe.style.width = 'auto';
+      iframe.style.height = 'auto';
+      iframe.style.border = '0';
+      iframe.style.filter = 'blur(12px) brightness(0.6)';
+      iframe.style.opacity = '0';
+      iframe.style.transition = 'opacity 1.6s ease';
+      iframe.style.pointerEvents = 'none';
+      document.getElementById('player-placeholder').appendChild(iframe);
+    }
+  }, 4000);
 </script>
 </body>
 </html>
