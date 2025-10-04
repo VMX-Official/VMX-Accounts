@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blurred YouTube Background with Audio</title>
+  <title></title>
   <style>
     html, body {
       margin: 0;
@@ -12,8 +12,10 @@
       height: 100%;
       overflow: hidden;
       background: black;
+      font-family: Arial, sans-serif;
     }
 
+    /* Background video */
     .video-background {
       position: fixed;
       top: 0;
@@ -21,57 +23,121 @@
       width: 100%;
       height: 100%;
       overflow: hidden;
-      filter: blur(10px);
+      filter: blur(10px) brightness(0.6);
+      z-index: -1;
+      pointer-events: none; /* disables all interaction */
     }
 
     iframe {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 177.78vh; /* maintain 16:9 aspect ratio */
+      width: 177.78vh; /* 16:9 ratio */
       height: 100vh;
       transform: translate(-50%, -50%);
       border: none;
+      pointer-events: none;
     }
 
+    /* Overlay before entering */
     .overlay {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.3);
+      background: rgba(0, 0, 0, 0.85);
       z-index: 2;
       display: flex;
       justify-content: center;
       align-items: center;
-      cursor: pointer;
-      color: white;
-      font-size: 1.5rem;
-      font-family: Arial, sans-serif;
+      flex-direction: column;
+      transition: opacity 1s ease;
     }
 
-    .hidden {
-      display: none;
+    .overlay.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .enter-btn {
+      background: none;
+      border: 2px solid #00ffff;
+      color: #00ffff;
+      font-size: 2rem;
+      padding: 1rem 3rem;
+      border-radius: 8px;
+      cursor: pointer;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 15px #00ffff;
+      animation: glowPulse 2s infinite alternate;
+    }
+
+    .enter-btn:hover {
+      background: rgba(0, 255, 255, 0.1);
+      box-shadow: 0 0 25px #00ffff;
+    }
+
+    @keyframes glowPulse {
+      from { box-shadow: 0 0 10px #00ffff; }
+      to { box-shadow: 0 0 25px #00ffff; }
     }
   </style>
 </head>
 <body>
-  <div class="video-background" id="videoContainer">
-    <!-- The YouTube iframe will be injected here -->
-  </div>
+  <div class="video-background" id="videoContainer"></div>
 
-  <div class="overlay" id="startButton">
-    ▶ Click to Play with Sound
+  <div class="overlay" id="overlay">
+    <button class="enter-btn" id="enterBtn">Enter</button>
   </div>
 
   <script>
-    document.getElementById('startButton').addEventListener('click', function() {
-      const iframe = document.createElement('iframe');
-      iframe.src = "https://www.youtube.com/embed/hO_iQqWhOUA?autoplay=1&loop=1&playlist=hO_iQqWhOUA&controls=0&showinfo=0&modestbranding=1";
-      iframe.allow = "autoplay; fullscreen";
-      document.getElementById('videoContainer').appendChild(iframe);
-      this.classList.add('hidden');
+    let player;
+
+    // Load YouTube API script
+    const tag = document.createElement('script');
+    tag.src = "https://www.youtube.com/iframe_api";
+    const firstScriptTag = document.getElementsByTagName('script')[0];
+    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+    function onYouTubeIframeAPIReady() {
+      player = new YT.Player('player', {
+        videoId: 'hO_iQqWhOUA',
+        playerVars: {
+          autoplay: 0,
+          loop: 1,
+          playlist: 'hO_iQqWhOUA',
+          controls: 0,
+          showinfo: 0,
+          modestbranding: 1,
+          rel: 0
+        },
+        events: {
+          'onReady': onPlayerReady
+        }
+      });
+    }
+
+    function onPlayerReady(event) {
+      // Set initial volume lower
+      event.target.setVolume(20);
+    }
+
+    document.getElementById('enterBtn').addEventListener('click', function() {
+      // Add iframe dynamically for YouTube API
+      const container = document.getElementById('videoContainer');
+      const iframe = document.createElement('div');
+      iframe.id = 'player';
+      container.appendChild(iframe);
+
+      // Initialize YouTube player
+      onYouTubeIframeAPIReady();
+
+      // Fade out overlay
+      const overlay = document.getElementById('overlay');
+      overlay.classList.add('hidden');
     });
   </script>
 </body>
