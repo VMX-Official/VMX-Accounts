@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Enter Page</title>
+  <title></title>
   <style>
     html, body {
       margin: 0;
@@ -15,7 +15,7 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Video background */
+    /* Background video */
     .video-background {
       position: fixed;
       top: 0;
@@ -32,14 +32,14 @@
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 177.78vh; /* maintain 16:9 ratio */
+      width: 177.78vh; /* 16:9 ratio */
       height: 100vh;
       transform: translate(-50%, -50%);
       border: none;
       pointer-events: none;
     }
 
-    /* Overlay with enter text */
+    /* Overlay with Enter text */
     .overlay {
       position: fixed;
       top: 0;
@@ -51,7 +51,7 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      transition: opacity 1s ease;
+      transition: opacity 2s ease;
     }
 
     .overlay.hidden {
@@ -59,10 +59,10 @@
       pointer-events: none;
     }
 
-    /* Glowing text */
+    /* Glowing Enter text */
     .enter-text {
       color: #00ffff;
-      font-size: 3rem;
+      font-size: 2rem;
       text-transform: uppercase;
       letter-spacing: 3px;
       text-shadow:
@@ -73,6 +73,12 @@
       cursor: pointer;
       animation: glowPulse 2s infinite alternate;
       user-select: none;
+      opacity: 1;
+      transition: opacity 1.5s ease;
+    }
+
+    .enter-text.fade {
+      opacity: 0;
     }
 
     @keyframes glowPulse {
@@ -121,7 +127,7 @@
         },
         events: {
           onReady: (event) => {
-            event.target.setVolume(20); // lower volume
+            event.target.setVolume(20);
             event.target.playVideo();
           }
         }
@@ -129,17 +135,26 @@
     }
 
     document.getElementById('enterText').addEventListener('click', () => {
-      const container = document.getElementById('videoContainer');
-      const playerDiv = document.createElement('div');
-      playerDiv.id = 'player';
-      container.appendChild(playerDiv);
-
-      // Initialize YouTube Player
-      onYouTubeIframeAPIReady();
-
-      // Fade out overlay
+      const enterText = document.getElementById('enterText');
       const overlay = document.getElementById('overlay');
-      overlay.classList.add('hidden');
+      const container = document.getElementById('videoContainer');
+      
+      // Fade out text first
+      enterText.classList.add('fade');
+
+      // After text fades, fade out overlay & start video
+      setTimeout(() => {
+        // Add video iframe
+        const playerDiv = document.createElement('div');
+        playerDiv.id = 'player';
+        container.appendChild(playerDiv);
+
+        // Start YouTube API player
+        onYouTubeIframeAPIReady();
+
+        // Fade out overlay
+        overlay.classList.add('hidden');
+      }, 1000); // Wait for text fade before background fade
     });
   </script>
 </body>
