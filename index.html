@@ -24,15 +24,15 @@
       height: 100%;
       z-index: -1;
       overflow: hidden;
-      pointer-events: none; /* disable interaction */
+      pointer-events: none;
     }
 
-    /* The actual iframe will fill this */
+    /* Apply blur to iframe once created */
     .video-background iframe {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 177.78vh; /* maintain 16:9 ratio based on height */
+      width: 177.78vh; /* maintain 16:9 ratio */
       height: 100vh;
       transform: translate(-50%, -50%);
       border: none;
@@ -63,7 +63,7 @@
     /* Glowing enter text */
     .enter-text {
       color: #00ffff;
-      font-size: 1.8rem; /* smaller text */
+      font-size: 1.5rem; /* smaller now */
       text-transform: uppercase;
       letter-spacing: 3px;
       text-shadow:
@@ -114,7 +114,6 @@
     const firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-    // Initialize player
     function createPlayer() {
       player = new YT.Player('ytPlayer', {
         videoId: 'hO_iQqWhOUA',
@@ -136,7 +135,6 @@
       });
     }
 
-    // When Enter is clicked
     document.getElementById('enterText').addEventListener('click', () => {
       const enterText = document.getElementById('enterText');
       const overlay = document.getElementById('overlay');
@@ -145,12 +143,14 @@
       // Fade out text
       enterText.classList.add('fade');
 
-      // After text fade, add YouTube iframe and fade overlay
+      // After fade, add video and fade overlay
       setTimeout(() => {
-        const iframeContainer = document.createElement('div');
-        iframeContainer.id = 'ytPlayer';
-        container.appendChild(iframeContainer);
+        const iframeDiv = document.createElement('div');
+        iframeDiv.id = 'ytPlayer';
+        container.appendChild(iframeDiv);
         createPlayer();
+
+        // Fade out overlay smoothly
         overlay.classList.add('hidden');
       }, 1000);
     });
