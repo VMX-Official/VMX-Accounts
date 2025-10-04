@@ -15,32 +15,37 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Video background container */
+    /* Video background */
     .video-background {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: -1;
       overflow: hidden;
+      z-index: -1;
       pointer-events: none;
     }
 
-    /* Apply blur to iframe once created */
     .video-background iframe {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 177.78vh; /* maintain 16:9 ratio */
+      width: 177.78vh; /* keep 16:9 ratio */
       height: 100vh;
       transform: translate(-50%, -50%);
       border: none;
       filter: blur(10px) brightness(0.6);
       pointer-events: none;
+      opacity: 0; /* fade in later */
+      transition: opacity 2s ease;
     }
 
-    /* Overlay before entering */
+    .video-background.show iframe {
+      opacity: 1;
+    }
+
+    /* Overlay */
     .overlay {
       position: fixed;
       top: 0;
@@ -60,17 +65,16 @@
       pointer-events: none;
     }
 
-    /* Glowing enter text */
+    /* Enter text */
     .enter-text {
       color: #00ffff;
-      font-size: 1.5rem; /* smaller now */
+      font-size: 1.3rem; /* smaller */
       text-transform: uppercase;
       letter-spacing: 3px;
       text-shadow:
         0 0 10px #00ffff,
         0 0 20px #00ffff,
-        0 0 40px #00ffff,
-        0 0 80px #00ffff;
+        0 0 40px #00ffff;
       cursor: pointer;
       animation: glowPulse 2s infinite alternate;
       user-select: none;
@@ -99,58 +103,35 @@
   </style>
 </head>
 <body>
-  <div class="video-background" id="videoContainer"></div>
+  <div class="video-background" id="videoContainer">
+    <!-- Preload the iframe muted so browsers allow it -->
+    <iframe
+      id="ytVideo"
+      src="https://www.youtube.com/embed/hO_iQqWhOUA?autoplay=0&mute=1&loop=1&playlist=hO_iQqWhOUA&controls=0&showinfo=0&modestbranding=1"
+      allow="autoplay; fullscreen"
+      allowfullscreen>
+    </iframe>
+  </div>
 
   <div class="overlay" id="overlay">
     <div class="enter-text" id="enterText">Enter</div>
   </div>
 
   <script>
-    let player;
+    const overlay = document.getElementById('overlay');
+    const enterText = document.getElementById('enterText');
+    const videoContainer = document.getElementById('videoContainer');
+    const ytVideo = document.getElementById('ytVideo');
 
-    // Load YouTube API
-    const tag = document.createElement('script');
-    tag.src = "https://www.youtube.com/iframe_api";
-    const firstScriptTag = document.getElementsByTagName('script')[0];
-    firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-    function createPlayer() {
-      player = new YT.Player('ytPlayer', {
-        videoId: 'hO_iQqWhOUA',
-        playerVars: {
-          autoplay: 1,
-          loop: 1,
-          playlist: 'hO_iQqWhOUA',
-          controls: 0,
-          showinfo: 0,
-          modestbranding: 1,
-          rel: 0
-        },
-        events: {
-          onReady: (event) => {
-            event.target.setVolume(20);
-            event.target.playVideo();
-          }
-        }
-      });
-    }
-
-    document.getElementById('enterText').addEventListener('click', () => {
-      const enterText = document.getElementById('enterText');
-      const overlay = document.getElementById('overlay');
-      const container = document.getElementById('videoContainer');
-
-      // Fade out text
+    enterText.addEventListener('click', () => {
+      // fade text
       enterText.classList.add('fade');
 
-      // After fade, add video and fade overlay
+      // after fade, show video and fade out overlay
       setTimeout(() => {
-        const iframeDiv = document.createElement('div');
-        iframeDiv.id = 'ytPlayer';
-        container.appendChild(iframeDiv);
-        createPlayer();
-
-        // Fade out overlay smoothly
+        ytVideo.contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+        ytVideo.src = ytVideo.src.replace('mute=1', 'mute=0'); // unmute
+        videoContainer.classList.add('show');
         overlay.classList.add('hidden');
       }, 1000);
     });
