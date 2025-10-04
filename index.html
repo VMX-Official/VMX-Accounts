@@ -15,31 +15,32 @@
       font-family: Arial, sans-serif;
     }
 
-    /* Background video */
+    /* Video background container */
     .video-background {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      overflow: hidden;
-      filter: blur(10px) brightness(0.6);
       z-index: -1;
-      pointer-events: none;
+      overflow: hidden;
+      pointer-events: none; /* disable interaction */
     }
 
-    iframe {
+    /* The actual iframe will fill this */
+    .video-background iframe {
       position: absolute;
       top: 50%;
       left: 50%;
-      width: 177.78vh; /* 16:9 ratio */
+      width: 177.78vh; /* maintain 16:9 ratio based on height */
       height: 100vh;
       transform: translate(-50%, -50%);
       border: none;
+      filter: blur(10px) brightness(0.6);
       pointer-events: none;
     }
 
-    /* Overlay with Enter text */
+    /* Overlay before entering */
     .overlay {
       position: fixed;
       top: 0;
@@ -59,10 +60,10 @@
       pointer-events: none;
     }
 
-    /* Glowing Enter text */
+    /* Glowing enter text */
     .enter-text {
       color: #00ffff;
-      font-size: 2rem;
+      font-size: 1.8rem; /* smaller text */
       text-transform: uppercase;
       letter-spacing: 3px;
       text-shadow:
@@ -113,8 +114,9 @@
     const firstScriptTag = document.getElementsByTagName('script')[0];
     firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-    function onYouTubeIframeAPIReady() {
-      player = new YT.Player('player', {
+    // Initialize player
+    function createPlayer() {
+      player = new YT.Player('ytPlayer', {
         videoId: 'hO_iQqWhOUA',
         playerVars: {
           autoplay: 1,
@@ -134,27 +136,23 @@
       });
     }
 
+    // When Enter is clicked
     document.getElementById('enterText').addEventListener('click', () => {
       const enterText = document.getElementById('enterText');
       const overlay = document.getElementById('overlay');
       const container = document.getElementById('videoContainer');
-      
-      // Fade out text first
+
+      // Fade out text
       enterText.classList.add('fade');
 
-      // After text fades, fade out overlay & start video
+      // After text fade, add YouTube iframe and fade overlay
       setTimeout(() => {
-        // Add video iframe
-        const playerDiv = document.createElement('div');
-        playerDiv.id = 'player';
-        container.appendChild(playerDiv);
-
-        // Start YouTube API player
-        onYouTubeIframeAPIReady();
-
-        // Fade out overlay
+        const iframeContainer = document.createElement('div');
+        iframeContainer.id = 'ytPlayer';
+        container.appendChild(iframeContainer);
+        createPlayer();
         overlay.classList.add('hidden');
-      }, 1000); // Wait for text fade before background fade
+      }, 1000);
     });
   </script>
 </body>
